@@ -31,7 +31,7 @@ static char *float_string(float_class_t *this)
 
     if (!this)
         raise("Null pointer passed");
-    asprintf(&ptr, "<%s %f>", this->base.__name__, this->v);
+    asprintf(&ptr, "<%s (%f)>", this->base.__name__, this->v);
     return ptr;
 }
 

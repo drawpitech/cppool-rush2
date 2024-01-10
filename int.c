@@ -30,7 +30,7 @@ static char *int_string(int_class_t *this)
 
     if (!this)
         raise("Null inter passed");
-    asprintf(&ptr, "<%s %d>", this->base.__name__, this->v);
+    asprintf(&ptr, "<%s (%d)>", this->base.__name__, this->v);
     return ptr;
 }
 
