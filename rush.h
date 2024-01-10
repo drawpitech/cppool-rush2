@@ -20,6 +20,12 @@ typedef Class class_t;
 typedef Container container_t;
 
 typedef struct {
+    Class base;
+    char *identifier;
+    int power;
+} PlayerClass;
+
+typedef struct {
     class_t base;
     int x, y;
 } point_class_t;

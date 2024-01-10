@@ -5,19 +5,15 @@
 ** Exercice 01
 */
 
-#include "player.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct {
-    Class base;
-    char *identifier;
-    int power;
-} PlayerClass;
+#include "player.h"
+#include "rush.h"
 
 // You need to initialize internal resources at the start of the function
-static void Player_ctor(PlayerClass *this, va_list *args)
+static void player_ctor(PlayerClass *this, va_list *args)
 {
     this->identifier = strdup("Kreog");
     this->power = rand() % 42;
@@ -25,7 +21,7 @@ static void Player_ctor(PlayerClass *this, va_list *args)
 }
 
 // You need to release internal resources at the start of the function
-static void Player_dtor(PlayerClass *this)
+static void player_dtor(PlayerClass *this)
 {
     free(this->identifier);
     printf("~Player()\n");
@@ -35,8 +31,8 @@ static const PlayerClass _description = {
     {   /* Class struct */
         .__size__ = sizeof(PlayerClass),
         .__name__ = "Player",
-        .__ctor__ = (ctor_t)&Player_ctor,
-        .__dtor__ = (dtor_t)&Player_dtor,
+        .__ctor__ = (ctor_t)&player_ctor,
+        .__dtor__ = (dtor_t)&player_dtor,
         .__str__ = NULL,
         .__add__ = NULL,
         .__sub__ = NULL,
