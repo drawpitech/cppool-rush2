@@ -68,6 +68,7 @@ static void array_iter_setval(array_iter_class_t *this, ...)
     ind = va_arg(ap, size_t);
     if (ind > this->_array->_size)
         raise("Index out of range");
+    delete(this->_array->_tab[ind]);
     this->_array->_tab[ind] = va_new(this->_array->_type, &ap);
     va_end(ap);
 }
@@ -167,6 +168,7 @@ static void array_setitem(array_class_t *this, ...)
     ind = va_arg(ap, size_t);
     if (ind > this->_size)
         raise("Index out of range");
+    delete(this->_tab[ind]);
     this->_tab[ind] = va_new(this->_type, &ap);
     va_end(ap);
 }
