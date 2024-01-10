@@ -15,11 +15,12 @@
 typedef struct {
     Class base;
     int x, y;
-} PointClass;
+} point_class_t;
+
 
 typedef struct {
     Class base;
     int x, y, z;
-} VertexClass;
+} vertex_class_t;
 
 #endif /* !RUSH2_H_ */

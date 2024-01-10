@@ -5,32 +5,32 @@
 ** Exercice 02
 */
 
+#include "new.h"
+#include "vertex.h"
 #include "rush.h"
 #include <stdio.h>
 
 /* Fill this function for exercice 02 */
-static void vertex_ctor(VertexClass *this, va_list *args)
+static void vertex_ctor(vertex_class_t *this, va_list *args)
 {
     if (!this || !args)
         raise("Null pointer passed");
     this->x = va_arg(*args, int);
     this->y = va_arg(*args, int);
     this->z = va_arg(*args, int);
-    printf("Vertex()\n");
 }
 
 /* Fill this function for exercice 02 */
-static void vertex_dtor(VertexClass *this)
+static void vertex_dtor(vertex_class_t *this)
 {
     if (!this)
         raise("Null pointer passed");
     this->x = 0;
     this->y = 0;
     this->z = 0;
-    printf("~Vertex()\n");
 }
 
-static char *vertex_string(VertexClass *this)
+static char *vertex_string(vertex_class_t *this)
 {
     char *ptr = NULL;
 
@@ -41,16 +41,43 @@ static char *vertex_string(VertexClass *this)
     return ptr;
 }
 
-// Create additional functions here
-static const VertexClass _description = {
+static
+vertex_class_t *vertex_add(
+    const vertex_class_t *this, const vertex_class_t *other)
+{
+    if (!this || !other)
+        raise("Null pointer passed");
+    return new(
+        Vertex,
+        this->x + other->x,
+        this->y + other->y,
+        this->z + other->z
+        );
+}
+
+static
+vertex_class_t *vertex_sub(
+    const vertex_class_t *this, const vertex_class_t *other)
+{
+    if (!this || !other)
+        raise("Null pointer passed");
+    return new(
+        Vertex,
+        this->x - other->x,
+        this->y - other->y,
+        this->z - other->z
+        );
+}
+
+static const vertex_class_t _description = {
     {   /* Class struct */
-        .__size__ = sizeof(VertexClass),
+        .__size__ = sizeof(vertex_class_t),
         .__name__ = "Vertex",
         .__ctor__ = (ctor_t)&vertex_ctor,
         .__dtor__ = (dtor_t)&vertex_dtor,
         .__str__ = (to_string_t)&vertex_string,
-        .__add__ = NULL,    /* Implement this method for exercice 03 */
-        .__sub__ = NULL,    /* Implement this method for exercice 03 */
+        .__add__ = (binary_operator_t)&vertex_add,
+        .__sub__ = (binary_operator_t)&vertex_sub,
         .__mul__ = NULL,
         .__div__ = NULL,
         .__eq__ = NULL,

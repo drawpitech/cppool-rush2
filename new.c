@@ -9,7 +9,7 @@
 #include <stdarg.h>
 #include "new.h"
 
-Object *va_new(const Class *class, va_list* ap)
+Object *va_new(const Class *class, va_list *ap)
 {
     Class *new_obj = NULL;
 

@@ -6,29 +6,28 @@
 */
 
 #include "rush.h"
+#include "new.h"
 #include <stdio.h>
 
 /* Fill this function for exercice 02 */
-static void point_ctor(PointClass *this, va_list *args)
+static void point_ctor(point_class_t *this, va_list *args)
 {
     if (!this || !args)
         raise("Null pointer passed");
     this->x = va_arg(*args, int);
     this->y = va_arg(*args, int);
-    printf("Point()\n");
 }
 
 /* Fill this function for exercice 02 */
-static void point_dtor(PointClass *this)
+static void point_dtor(point_class_t *this)
 {
     if (!this)
         raise("Null pointer passed");
     this->x = 0;
     this->y = 0;
-    printf("~Point()\n");
 }
 
-static char *point_string(PointClass *this)
+static char *point_string(point_class_t *this)
 {
     char *ptr = NULL;
 
@@ -38,16 +37,31 @@ static char *point_string(PointClass *this)
     return ptr;
 }
 
-// Create additional functions here
-static const PointClass _description = {
+static
+point_class_t *point_add(const point_class_t *this, const point_class_t *other)
+{
+    if (!this || !other)
+        raise("Null pointer passed");
+    return new(Point, this->x + other->x, this->y + other->y);
+}
+
+static
+point_class_t *point_sub(const point_class_t *this, const point_class_t *other)
+{
+    if (!this || !other)
+        raise("Null pointer passed");
+    return new(Point, this->x - other->x, this->y - other->y);
+}
+
+static const point_class_t _description = {
     {   /* Class struct */
-        .__size__ = sizeof(PointClass),
+        .__size__ = sizeof(point_class_t),
         .__name__ = "Point",
         .__ctor__ = (ctor_t)&point_ctor,
         .__dtor__ = (dtor_t)&point_dtor,
         .__str__ = (to_string_t)&point_string,
-        .__add__ = NULL,    /* Implement this method for exercice 03 */
-        .__sub__ = NULL,    /* Implement this method for exercice 03 */
+        .__add__ = (binary_operator_t)&point_add,
+        .__sub__ = (binary_operator_t)&point_sub,
         .__mul__ = NULL,
         .__div__ = NULL,
         .__eq__ = NULL,
