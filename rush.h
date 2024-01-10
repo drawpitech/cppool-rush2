@@ -8,8 +8,6 @@
 #ifndef RUSH2_H_
     #define RUSH2_H_
 
-    #define _GNU_SOURCE
-
     #include "container.h"
     #include "iterator.h"
     #include "point.h"

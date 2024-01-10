@@ -27,10 +27,13 @@ static void int_dtor(int_class_t *this)
 static char *int_string(int_class_t *this)
 {
     char *ptr = NULL;
+    size_t size_res = 0;
 
     if (!this)
-        raise("Null inter passed");
-    asprintf(&ptr, "<%s (%d)>", this->base.__name__, this->v);
+        raise("Null pointer passed");
+    size_res = snprintf(NULL, 0, "<%s (%d)>", this->base.__name__, this->v);
+    ptr = malloc(sizeof(char) * size_res + 1);
+    sprintf(ptr, "<%s (%d)>", this->base.__name__, this->v);
     return ptr;
 }
 

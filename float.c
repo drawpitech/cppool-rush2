@@ -28,10 +28,13 @@ static void float_dtor(float_class_t *this)
 static char *float_string(float_class_t *this)
 {
     char *ptr = NULL;
+    size_t size_res = 0;
 
     if (!this)
         raise("Null pointer passed");
-    asprintf(&ptr, "<%s (%f)>", this->base.__name__, this->v);
+    size_res = snprintf(NULL, 0, "<%s (%f)>", this->base.__name__, this->v);
+    ptr = malloc(sizeof(char) * size_res + 1);
+    sprintf(ptr, "<%s (%f)>", this->base.__name__, this->v);
     return ptr;
 }
 

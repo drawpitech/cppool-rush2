@@ -30,10 +30,14 @@ static void point_dtor(point_class_t *this)
 static char *point_string(point_class_t *this)
 {
     char *ptr = NULL;
+    size_t size_res = 0;
 
     if (!this)
         raise("Null pointer passed");
-    asprintf(&ptr, "<%s (%d, %d)>", this->base.__name__, this->x, this->y);
+    size_res = snprintf(NULL, 0, "<%s (%d, %d)>",
+            this->base.__name__, this->x, this->y);
+    ptr = malloc(sizeof(char) * size_res + 1);
+    sprintf(ptr, "<%s (%d, %d)>", this->base.__name__, this->x, this->y);
     return ptr;
 }
 
