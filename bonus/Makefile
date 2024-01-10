@@ -58,3 +58,11 @@ fclean: clean
 	$(RM) $(NAME)
 
 .PHONY: clean fclean
+
+cov: GCOVR_FLAGS := --exclude bonus/
+cov: GCOVR_FLAGS += --exclude tests/
+cov:
+	@ gcovr $(GCOVR_FLAGS)
+	@ gcovr $(GCOVR_FLAGS) --branches
+
+.PHONY: cov
