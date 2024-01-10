@@ -57,16 +57,21 @@ typedef struct {
     size_t _idx;
 } array_iter_class_t;
 
+typedef struct node_s {
+    object_t *_val;
+    struct node_s *next;
+} node_t;
+
 typedef struct {
     container_t base;
     class_t *_type;
     size_t _size;
-    object_t **_tab;
+    node_t *_list;
 } list_class_t;
 
 typedef struct {
     iterator_t base;
-    array_class_t *_array;
+    list_class_t *_list;
     size_t _idx;
 } list_iter_class_t;
 

@@ -120,6 +120,8 @@ static void array_ctor(array_class_t *this, va_list *args)
 
 static void array_dtor(array_class_t *this)
 {
+    if (!this)
+        raise("Null pointer passed");
     for (unsigned int i = 0; i < this->_size; i++)
         delete(this->_tab[i]);
     free(this->_tab);

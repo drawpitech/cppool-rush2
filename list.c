@@ -19,7 +19,7 @@ static void list_iter_ctor(
     list_iter_class_t *this,
     va_list *args)
 {
-    this->_array = va_arg(*args, list_class_t *);
+    this->_list = va_arg(*args, list_class_t *);
     this->_idx = va_arg(*args, int);
 }
 
@@ -51,25 +51,32 @@ static void list_iter_incr(list_iter_class_t *this)
 
 static object_t *list_iter_getval(list_iter_class_t *this)
 {
-    if (this->_idx >= this->_array->_size)
+    node_t *res = NULL;
+
+    if (this->_idx >= this->_list->_size)
         raise("Out of range");
-    return (this->_array->_tab[this->_idx]);
+    res = this->_list->_list;
+    for (size_t i = 0; i < this->_idx; i++)
+        res = res->next;
+    return res->_val;
 }
 
 /* Fill this function for exercice 05 */
 static void list_iter_setval(list_iter_class_t *this, ...)
 {
-    size_t ind = 0;
+    node_t *to_set = NULL;
     va_list ap;
 
-    if (!this || !this->_array || !this->_array->_tab)
+    if (!this || !this->_list || !this->_list->_list)
         raise("Null pointer passed");
-    va_start(ap, this);
-    ind = va_arg(ap, size_t);
-    if (ind > this->_array->_size)
+    if (this->_idx >= this->_list->_size)
         raise("Index out of range");
-    delete(this->_array->_tab[ind]);
-    this->_array->_tab[ind] = va_new(this->_array->_type, &ap);
+    to_set = this->_list->_list;
+    for (size_t i = 0; i < this->_idx; i++)
+        to_set = to_set->next;
+    delete(to_set->_val);
+    va_start(ap, this);
+    to_set->_val = va_new(this->_list->_type, &ap);
     va_end(ap);
 }
 
@@ -93,7 +100,7 @@ static const list_iter_class_t ListIteratorDescr = {
         .__getval__ = (getval_t)&list_iter_getval,
         .__setval__ = (setval_t)&list_iter_setval,
     },
-    ._array = NULL,
+    ._list = NULL,
     ._idx = 0
 };
 
@@ -103,26 +110,38 @@ static const Class *ListIterator = (const Class *)&ListIteratorDescr;
 static void list_ctor(list_class_t *this, va_list *args)
 {
     va_list value;
+    node_t *temp = NULL;
 
     if (!this || !args)
         raise("Null pointer passed");
     this->_size = va_arg(*args, size_t);
     this->_type = va_arg(*args, class_t *);
-    this->_tab = malloc(sizeof(object_t *) * this->_size);
-    if (!this->_tab)
-        raise("Out of memory");
+    temp = this->_list;
     for (size_t i = 0; i < this->_size; i++){
+        this->_list = malloc(sizeof(node_t *));
+        if (!this->_list)
+            raise("Out of memory");
         va_copy(value, *args);
-        this->_tab[i] = va_new(this->_type, &value);
+        this->_list->_val = va_new(this->_type, &value);
         va_end(value);
+        this->_list->next = temp;
+        temp = this->_list;
     }
 }
 
 static void list_dtor(list_class_t *this)
 {
-    for (unsigned int i = 0; i < this->_size; i++)
-        delete(this->_tab[i]);
-    free(this->_tab);
+    node_t *temp = NULL;
+
+    if (!this)
+        raise("Null pointer passed");
+    temp = this->_list;
+    for (unsigned int i = 0; i < this->_size; i++) {
+        this->_list = this->_list->next;
+        delete(temp->_val);
+        free(temp);
+        temp = this->_list;
+    }
 }
 
 static size_t list_len(list_class_t *this)
@@ -145,31 +164,40 @@ static object_t *list_getitem(list_class_t *this, ...)
 {
     size_t ind = 0;
     va_list ap;
+    node_t *res = NULL;
 
-    if (!this || !this->_tab)
+    if (!this || !this->_list)
         raise("Null pointer passed");
     va_start(ap, this);
     ind = va_arg(ap, size_t);
     va_end(ap);
-    if (ind > this->_size)
-        raise("Index out of range");
-    return this->_tab[ind];
+    if (ind >= this->_size)
+        raise("Out of range");
+    res = this->_list;
+    for (size_t i = 0; i < ind; i++)
+        res = res->next;
+    return res->_val;
 }
 
 /* Fill this function for exercice 05 */
 static void list_setitem(list_class_t *this, ...)
 {
-    size_t ind = 0;
+    node_t *to_set = NULL;
     va_list ap;
+    size_t ind = 0;
 
-    if (!this || !this->_tab)
+    if (!this || !this->_list || !this->_list)
         raise("Null pointer passed");
     va_start(ap, this);
     ind = va_arg(ap, size_t);
     if (ind > this->_size)
         raise("Index out of range");
-    delete(this->_tab[ind]);
-    this->_tab[ind] = va_new(this->_type, &ap);
+    to_set = this->_list;
+    for (size_t i = 0; i < ind; i++)
+        to_set = to_set->next;
+    delete(to_set->_val);
+    va_start(ap, this);
+    to_set->_val = va_new(this->_type, &ap);
     va_end(ap);
 }
 
@@ -197,7 +225,7 @@ static const list_class_t _descr = {
     },
     ._type = NULL,
     ._size = 0,
-    ._tab = NULL
+    ._list = NULL
 };
 
 const class_t *List = (const class_t *)&_descr;
