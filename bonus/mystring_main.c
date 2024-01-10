@@ -5,14 +5,14 @@
 ** Exercice 05
 */
 
+#include <stdio.h>
 #include "array.h"
 #include "int.h"
 #include "vertex.h"
 #include "new.h"
 #include "char.h"
 #include "../list.h"
-#include "string.h"
-#include <stdio.h>
+#include "mystring.h"
 
 int main(void)
 {
