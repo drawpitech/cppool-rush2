@@ -23,4 +23,19 @@ typedef struct {
     int x, y, z;
 } vertex_class_t;
 
+typedef struct {
+    Class base;
+    int v;
+} int_class_t;
+
+typedef struct {
+    Class base;
+    float v;
+} float_class_t;
+
+typedef struct {
+    Class base;
+    char v;
+} char_class_t;
+
 #endif /* !RUSH2_H_ */

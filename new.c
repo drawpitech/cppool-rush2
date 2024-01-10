@@ -29,6 +29,8 @@ Object *new(const Class *class, ...)
     va_list ap;
     Object *new_obj = NULL;
 
+    if (!class)
+        raise("Null pointer passed");
     va_start(ap, class);
     new_obj = va_new(class, &ap);
     va_end(ap);
