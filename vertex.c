@@ -9,43 +9,46 @@
 #include <stdio.h>
 
 /* Fill this function for exercice 02 */
-static void point_ctor(PointClass *this, va_list *args)
+static void vertex_ctor(VertexClass *this, va_list *args)
 {
     if (!this || !args)
         raise("Null pointer passed");
     this->x = va_arg(*args, int);
     this->y = va_arg(*args, int);
-    printf("Point()\n");
+    this->z = va_arg(*args, int);
+    printf("Vertex()\n");
 }
 
 /* Fill this function for exercice 02 */
-static void point_dtor(PointClass *this)
+static void vertex_dtor(VertexClass *this)
 {
     if (!this)
         raise("Null pointer passed");
     this->x = 0;
     this->y = 0;
-    printf("~Point()\n");
+    this->z = 0;
+    printf("~Vertex()\n");
 }
 
-static char *point_string(PointClass *this)
+static char *vertex_string(VertexClass *this)
 {
     char *ptr = NULL;
 
     if (!this)
         raise("Null pointer passed");
-    asprintf(&ptr, "<%s (%d, %d)>", this->base.__name__, this->x, this->y);
+    asprintf(&ptr, "<%s (%d, %d, %d)>",
+        this->base.__name__, this->x, this->y, this->z);
     return ptr;
 }
 
 // Create additional functions here
-static const PointClass _description = {
+static const VertexClass _description = {
     {   /* Class struct */
-        .__size__ = sizeof(PointClass),
-        .__name__ = "Point",
-        .__ctor__ = (ctor_t)&point_ctor,
-        .__dtor__ = (dtor_t)&point_dtor,
-        .__str__ = (to_string_t)&point_string,
+        .__size__ = sizeof(VertexClass),
+        .__name__ = "Vertex",
+        .__ctor__ = (ctor_t)&vertex_ctor,
+        .__dtor__ = (dtor_t)&vertex_dtor,
+        .__str__ = (to_string_t)&vertex_string,
         .__add__ = NULL,    /* Implement this method for exercice 03 */
         .__sub__ = NULL,    /* Implement this method for exercice 03 */
         .__mul__ = NULL,
@@ -55,7 +58,8 @@ static const PointClass _description = {
         .__lt__ = NULL
     },
     .x = 0,
-    .y = 0
+    .y = 0,
+    .z = 0,
 };
 
-const Class *Point = (const Class *)&_description;
+const Class *Vertex = (const Class *)&_description;
