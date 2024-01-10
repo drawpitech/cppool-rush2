@@ -66,7 +66,47 @@ vertex_class_t *vertex_sub(
         this->x - other->x,
         this->y - other->y,
         this->z - other->z
-        );
+    );
+}
+
+static
+vertex_class_t *vertex_mul(
+    const vertex_class_t *this, const vertex_class_t *other)
+{
+    if (!this || !other)
+        raise("Null pointer passed");
+    return new(
+        Vertex,
+        this->x * other->x,
+        this->y * other->y,
+        this->z * other->z
+    );
+}
+
+static
+vertex_class_t *vertex_div(
+    const vertex_class_t *this, const vertex_class_t *other)
+{
+    if (!this || !other)
+        raise("Null pointer passed");
+    return new(
+        Vertex,
+        this->x / other->x,
+        this->y / other->y,
+        this->z / other->z
+    );
+}
+
+static
+bool vertex_eq(const vertex_class_t *this, const vertex_class_t *other)
+{
+    if (!this || !other)
+        raise("Null pointer passed");
+    return (
+        this->x == other->x
+        && this->y == other->y
+        && this->z == other->z
+    );
 }
 
 static const vertex_class_t _description = {
@@ -78,9 +118,9 @@ static const vertex_class_t _description = {
         .__str__ = (to_string_t)&vertex_string,
         .__add__ = (binary_operator_t)&vertex_add,
         .__sub__ = (binary_operator_t)&vertex_sub,
-        .__mul__ = NULL,
-        .__div__ = NULL,
-        .__eq__ = NULL,
+        .__mul__ = (binary_operator_t)&vertex_mul,
+        .__div__ = (binary_operator_t)&vertex_div,
+        .__eq__ = (binary_comparator_t)&vertex_eq,
         .__gt__ = NULL,
         .__lt__ = NULL
     },
