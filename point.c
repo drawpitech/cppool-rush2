@@ -53,6 +53,30 @@ point_class_t *point_sub(const point_class_t *this, const point_class_t *other)
     return new(Point, this->x - other->x, this->y - other->y);
 }
 
+static
+point_class_t *point_mul(const point_class_t *this, const point_class_t *other)
+{
+    if (!this || !other)
+        raise("Null pointer passed");
+    return new(Point, this->x * other->x, this->y * other->y);
+}
+
+static
+point_class_t *point_div(const point_class_t *this, const point_class_t *other)
+{
+    if (!this || !other)
+        raise("Null pointer passed");
+    return new(Point, this->x / other->x, this->y / other->y);
+}
+
+static
+bool point_eq(const point_class_t *this, const point_class_t *other)
+{
+    if (!this || !other)
+        raise("Null pointer passed");
+    return (this->x == other->x && this->y == other->y);
+}
+
 static const point_class_t _description = {
     {   /* Class struct */
         .__size__ = sizeof(point_class_t),
@@ -62,9 +86,9 @@ static const point_class_t _description = {
         .__str__ = (to_string_t)&point_string,
         .__add__ = (binary_operator_t)&point_add,
         .__sub__ = (binary_operator_t)&point_sub,
-        .__mul__ = NULL,
-        .__div__ = NULL,
-        .__eq__ = NULL,
+        .__mul__ = (binary_operator_t)&point_mul,
+        .__div__ = (binary_operator_t)&point_div,
+        .__eq__ = (binary_comparator_t)&point_eq,
         .__gt__ = NULL,
         .__lt__ = NULL
     },
