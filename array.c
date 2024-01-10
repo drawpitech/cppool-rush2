@@ -60,6 +60,32 @@ static void array_iter_setval(array_iter_class_t *this, ...)
 {
 }
 
+static const array_iter_class_t ArrayIteratorDescr = {
+    {   /* Iterator struct */
+        {   /* Class struct */
+            .__size__ = sizeof(array_iter_class_t),
+            .__name__ = "ArrayIterator",
+            .__ctor__ = (ctor_t)&array_iter_ctor,
+            .__dtor__ = NULL,
+            .__str__ = NULL,
+            .__add__ = NULL,
+            .__sub__ = NULL,
+            .__mul__ = NULL,
+            .__div__ = NULL,
+            .__eq__ = (binary_comparator_t)&array_iter_eq,
+            .__gt__ = (binary_comparator_t)&array_iter_gt,
+            .__lt__ = (binary_comparator_t)&array_iter_lt,
+        },
+        .__incr__ = (incr_t)&array_iter_incr,
+        .__getval__ = (getval_t)&array_iter_getval,
+        .__setval__ = (setval_t)&array_iter_setval,
+    },
+    ._array = NULL,
+    ._idx = 0
+};
+
+static const Class *ArrayIterator = (const Class *)&ArrayIteratorDescr;
+
 /* Fill this function for exercice 05 */
 static void array_ctor(array_class_t *this, va_list *args)
 {
@@ -96,32 +122,6 @@ static object_t *array_getitem(array_class_t *this, ...)
 static void array_setitem(array_class_t *this, ...)
 {
 }
-
-static const array_iter_class_t ArrayIteratorDescr = {
-    {   /* Iterator struct */
-        {   /* Class struct */
-            .__size__ = sizeof(array_iter_class_t),
-            .__name__ = "ArrayIterator",
-            .__ctor__ = (ctor_t)&array_iter_ctor,
-            .__dtor__ = NULL,
-            .__str__ = NULL,
-            .__add__ = NULL,
-            .__sub__ = NULL,
-            .__mul__ = NULL,
-            .__div__ = NULL,
-            .__eq__ = (binary_comparator_t)&array_iter_eq,
-            .__gt__ = (binary_comparator_t)&array_iter_gt,
-            .__lt__ = (binary_comparator_t)&array_iter_lt,
-        },
-        .__incr__ = (incr_t)&array_iter_incr,
-        .__getval__ = (getval_t)&array_iter_getval,
-        .__setval__ = (setval_t)&array_iter_setval,
-    },
-    ._array = NULL,
-    ._idx = 0
-};
-
-static const Class *ArrayIterator = (const Class *)&ArrayIteratorDescr;
 
 static const array_class_t _descr = {
     {   /* Container struct */
