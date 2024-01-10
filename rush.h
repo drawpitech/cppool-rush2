@@ -57,4 +57,17 @@ typedef struct {
     size_t _idx;
 } array_iter_class_t;
 
+typedef struct {
+    container_t base;
+    class_t *_type;
+    size_t _size;
+    object_t **_tab;
+} list_class_t;
+
+typedef struct {
+    iterator_t base;
+    array_class_t *_array;
+    size_t _idx;
+} list_iter_class_t;
+
 #endif /* !RUSH2_H_ */
