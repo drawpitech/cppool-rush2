@@ -109,4 +109,4 @@ static const float_class_t _description = {
     .v = 0
 };
 
-const Class *Float = (const Class *)&_description;
+const class_t *Float = (const class_t *)&_description;

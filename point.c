@@ -72,4 +72,4 @@ static const point_class_t _description = {
     .y = 0
 };
 
-const Class *Point = (const Class *)&_description;
+const class_t *Point = (const class_t *)&_description;

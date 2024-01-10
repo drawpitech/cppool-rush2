@@ -89,4 +89,4 @@ static const vertex_class_t _description = {
     .z = 0,
 };
 
-const Class *Vertex = (const Class *)&_description;
+const class_t *Vertex = (const class_t *)&_description;

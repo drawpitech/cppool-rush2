@@ -8,10 +8,11 @@
 #include "raise.h"
 #include <stdarg.h>
 #include "new.h"
+#include "rush.h"
 
-Object *va_new(const Class *class, va_list *ap)
+object_t *va_new(const class_t *class, va_list *ap)
 {
-    Class *new_obj = NULL;
+    class_t *new_obj = NULL;
 
     if (!class)
         raise("Null pointer passed");
@@ -21,13 +22,13 @@ Object *va_new(const Class *class, va_list *ap)
     memcpy(new_obj, class, class->__size__);
     if (class->__ctor__)
         class->__ctor__(new_obj, ap);
-    return (Object *)new_obj;
+    return (object_t *)new_obj;
 }
 
-Object *new(const Class *class, ...)
+object_t *new(const class_t *class, ...)
 {
     va_list ap;
-    Object *new_obj = NULL;
+    object_t *new_obj = NULL;
 
     if (!class)
         raise("Null pointer passed");
@@ -37,10 +38,11 @@ Object *new(const Class *class, ...)
     return new_obj;
 }
 
-void delete(Object *ptr)
+void delete(object_t *ptr)
 {
-    if ((Class *)ptr && ((Class *)ptr)->__dtor__)
-        ((Class *)ptr)->__dtor__(ptr);
-    if (ptr)
-        free(ptr);
+    if (!ptr)
+        return;
+    if (((class_t *)ptr)->__dtor__)
+        ((class_t *)ptr)->__dtor__(ptr);
+    free(ptr);
 }

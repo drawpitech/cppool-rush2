@@ -108,4 +108,4 @@ static const int_class_t _description = {
     .v = 0
 };
 
-const Class *Int = (const Class *)&_description;
+const class_t *Int = (const class_t *)&_description;
