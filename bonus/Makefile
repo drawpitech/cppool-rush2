@@ -32,6 +32,7 @@ SRC += vertex.c
 VPATH += ../tests/
 SRC += test_point.c
 SRC += test_vertex.c
+SRC += test_array.c
 
 OBJ := $(SRC:.c=.o)
 
