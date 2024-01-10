@@ -267,6 +267,20 @@ static char *list_string(list_class_t *this)
     return ptr;
 }
 
+static
+bool list_eq(const list_class_t *this, const list_class_t *other)
+{
+    if (!this || !other)
+        raise("Null pointer passed");
+    if (this->_size != other->_size)
+        return false;
+    for (size_t i = 0; i < this->_size; i++) {
+        if (!eq(list_getitem(this, i), list_getitem(other, i)))
+            return false;
+    }
+    return true;
+}
+
 static const list_class_t _descr = {
     {   /* Container struct */
         {   /* Class struct */
@@ -279,7 +293,7 @@ static const list_class_t _descr = {
             .__sub__ = NULL,
             .__mul__ = NULL,
             .__div__ = NULL,
-            .__eq__ = NULL,
+            .__eq__ = (binary_comparator_t)&list_eq,
             .__gt__ = NULL,
             .__lt__ = NULL,
         },

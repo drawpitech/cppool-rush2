@@ -143,7 +143,7 @@ static iterator_t *array_end(array_class_t *this)
 }
 
 /* Fill this function for exercice 05 */
-static object_t *array_getitem(array_class_t *this, ...)
+static object_t *array_getitem(const array_class_t *this, ...)
 {
     size_t ind = 0;
     va_list ap;
@@ -236,6 +236,20 @@ static char *array_string(array_class_t *this)
     return ptr;
 }
 
+static
+bool arr_eq(const array_class_t *this, const array_class_t *other)
+{
+    if (!this || !other)
+        raise("Null pointer passed");
+    if (this->_size != other->_size)
+        return false;
+    for (size_t i = 0; i < this->_size; i++) {
+        if (!eq(array_getitem(this, i), array_getitem(other, i)))
+            return false;
+    }
+    return true;
+}
+
 static const array_class_t _descr = {
     {   /* Container struct */
         {   /* Class struct */
@@ -248,7 +262,7 @@ static const array_class_t _descr = {
             .__sub__ = NULL,
             .__mul__ = NULL,
             .__div__ = NULL,
-            .__eq__ = NULL,
+            .__eq__ = (binary_comparator_t)&arr_eq,
             .__gt__ = NULL,
             .__lt__ = NULL,
         },
