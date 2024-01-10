@@ -34,6 +34,7 @@ SRC += test_point.c
 SRC += test_vertex.c
 SRC += test_array.c
 SRC += test_int.c
+SRC += test_char.c
 
 OBJ := $(SRC:.c=.o)
 
