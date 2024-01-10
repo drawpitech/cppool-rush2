@@ -12,11 +12,16 @@
 #include "../rush.h"
 #include "vertex.h"
 
+static
 void redirect_all_std(void)
 {
     cr_redirect_stdout();
     cr_redirect_stderr();
 }
+
+/* ------------Tests on vertex functions -------------- */
+
+/* Test the constructor of vertex */
 
 Test (test_new_vertex_constructor, testvertex) {
     vertex_class_t *vertex = new(Vertex, 1, 2, 3);
@@ -32,8 +37,9 @@ Test (test_new_vertex_with_null_value, test2, .signal=SIGABRT) {
     delete(vertex);
 }
 
-Test (test_va_new_vertex_with_null_values, test2, .init = redirect_all_std, .signal=SIGABRT) {
-    vertex_class_t *vertex = va_new(NULL, NULL);
+Test (test_new_vertex_with_null_struct, test2, .init = redirect_all_std, .signal=SIGABRT) {
+    vertex_class_t *vertex = new(NULL, 1, 2, 3);
+    (void)vertex;
     cr_assert_stderr_eq_str("Null pointer passed");
 }
 
@@ -54,11 +60,13 @@ Test (test_new_vertex_string_null, test3, .signal=SIGABRT) {
 }
 
 Test (test_va_new_vertex_string_null_values, test3, .init = redirect_all_std, .signal=SIGABRT) {
-    vertex_class_t *vertex = va_new(NULL, NULL);
+    vertex_class_t *vertex = new(NULL, NULL);
     char *str = str(vertex);
     cr_assert_stderr_eq_str("Null pointer passed");
     free(str);
 }
+
+/* Test the addition of vertex */
 
 Test (test_va_new_vertex_add, test_4) {
     vertex_class_t *vertex1 = new(Vertex, 1, 2, 3);
@@ -95,8 +103,11 @@ Test (test_va_new_vertex_add_null_values, test4, .init = redirect_all_std, .sign
 Test (test_vertex_add_with_null_value1, test4, .init = redirect_all_std, .signal=SIGABRT) {
     vertex_class_t *vertex1 = new(Vertex, 1, 2, 3);
     vertex_class_t *vertex2 = new(NULL, 4, 5, 6);
+    (void)vertex2;
     addition(vertex1, NULL);
 }
+
+/* Test the subtraction of vertex */
 
 Test (test_va_new_vertex_sub, test_5) {
     vertex_class_t *vertex1 = new(Vertex, 1, 2, 3);
@@ -133,8 +144,11 @@ Test (test_va_new_vertex_sub_null_values, test5, .init = redirect_all_std, .sign
 Test (test_vertex_sub_with_null_value1, test5, .init = redirect_all_std, .signal=SIGABRT) {
     vertex_class_t *vertex1 = new(Vertex, 1, 2, 3);
     vertex_class_t *vertex2 = new(NULL, 4, 5, 6);
+    (void)vertex2;
     subtraction(vertex1, NULL);
 }
+
+/* Test the multiplication of vertex */
 
 Test (test_va_vertex_mul, test_6) {
     vertex_class_t *vertex1 = new(Vertex, 1, 2, 3);
@@ -171,8 +185,11 @@ Test (test_va_vertex_mul_null_values, test_6, .init = redirect_all_std, .signal=
 Test (test_vertex_with_null_value2, test5, .init = redirect_all_std, .signal=SIGABRT) {
     vertex_class_t *vertex1 = new(Vertex, 1, 2, 3);
     vertex_class_t *vertex2 = new(NULL, 4, 5, 6);
+    (void)vertex2;
     multiplication(vertex1, NULL);
 }
+
+/* Test the division of vertex */
 
 Test (test_vertex_div, test7) {
     vertex_class_t *vertex1 = new(Vertex, 1, 2, 3);
@@ -209,8 +226,11 @@ Test (test_vertex_div_null_values, test7, .init = redirect_all_std, .signal=SIGA
 Test (test_vertex_div_with_null_value1, test7, .init = redirect_all_std, .signal=SIGABRT) {
     vertex_class_t *vertex1 = new(Vertex, 1, 2, 3);
     vertex_class_t *vertex2 = new(NULL, 4, 5, 6);
+    (void)vertex2;
     division(vertex1, NULL);
 }
+
+/* Test the equality of vertex */
 
 Test (test_vertex_eq, test8) {
     vertex_class_t *vertex1 = new(Vertex, 1, 2, 3);
@@ -234,6 +254,7 @@ Test (test_vertex_eq_null_values, test8, .init = redirect_all_std, .signal=SIGAB
     vertex_class_t *vertex1 = va_new(NULL, NULL);
     vertex_class_t *vertex2 = va_new(NULL, NULL);
     bool res = eq(vertex1, vertex2);
+    (void)res;
     cr_assert_stderr_eq_str("Null pointer passed");
     delete(vertex1);
     delete(vertex2);
@@ -242,4 +263,5 @@ Test (test_vertex_eq_null_values, test8, .init = redirect_all_std, .signal=SIGAB
 Test (test_vertex_eq_with_null_value1, test8, .init = redirect_all_std, .signal=SIGABRT) {
     vertex_class_t *vertex1 = new(Vertex, 1, 2, 3);
     bool res = eq(vertex1, NULL);
+    (void)res;
 }
