@@ -116,9 +116,8 @@ static void list_ctor(list_class_t *this, va_list *args)
         raise("Null pointer passed");
     this->_size = va_arg(*args, size_t);
     this->_type = va_arg(*args, class_t *);
-    temp = this->_list;
     for (size_t i = 0; i < this->_size; i++){
-        this->_list = malloc(sizeof(node_t *));
+        this->_list = calloc(1, sizeof(node_t));
         if (!this->_list)
             raise("Out of memory");
         va_copy(value, *args);
@@ -225,6 +224,49 @@ list_class_t *list_add(const list_class_t *this, const list_class_t *other)
     return new_list;
 }
 
+static char *cat_list(list_class_t *this, char **dest)
+{
+    char *cat = NULL;
+    size_t size = 0;
+
+    for (size_t i = 0; i < this->_size; i++){
+        dest[i] = str(list_getitem(this, i));
+        size += strlen(dest[i]) + 2;
+    }
+    cat = calloc(size + 1, sizeof(char));
+    if (!cat)
+        raise("Out of memory");
+    for (size_t i = 0; i < this->_size - 1; i++){
+        strcat(strcat(cat, dest[i]), ", ");
+        free(dest[i]);
+    }
+    strcat(cat, dest[this->_size - 1]);
+    free(dest[this->_size - 1]);
+    return cat;
+}
+
+static char *list_string(list_class_t *this)
+{
+    char *ptr = NULL;
+    size_t size_res = 0;
+    char *cat_arr = NULL;
+    char **arr = NULL;
+
+    if (!this)
+        raise("Null pointer passed");
+    arr = malloc(sizeof(char *) * this->_size);
+    if (!arr)
+        raise("Out of memory");
+    cat_arr = cat_list(this, arr);
+    free(arr);
+    size_res = snprintf(NULL, 0, "<%s (%s)>",
+        this->base.base.__name__, cat_arr);
+    ptr = malloc(sizeof(char) * size_res + 1);
+    sprintf(ptr, "<%s (%s)>", this->base.base.__name__, cat_arr);
+    free(cat_arr);
+    return ptr;
+}
+
 static const list_class_t _descr = {
     {   /* Container struct */
         {   /* Class struct */
@@ -232,7 +274,7 @@ static const list_class_t _descr = {
             .__name__ = "List",
             .__ctor__ = (ctor_t)&list_ctor,
             .__dtor__ = (dtor_t)&list_dtor,
-            .__str__ = NULL,
+            .__str__ = (to_string_t)&list_string,
             .__add__ = (binary_operator_t)&list_add,
             .__sub__ = NULL,
             .__mul__ = NULL,

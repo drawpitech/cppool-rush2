@@ -193,6 +193,49 @@ array_class_t *array_add(const array_class_t *this, const array_class_t *other)
     return new_array;
 }
 
+static char *cat_array(array_class_t *this, char **dest)
+{
+    char *cat = NULL;
+    size_t size = 0;
+
+    for (size_t i = 0; i < this->_size; i++){
+        dest[i] = str(array_getitem(this, i));
+        size += strlen(dest[i]) + 2;
+    }
+    cat = calloc(size + 1, sizeof(char));
+    if (!cat)
+        raise("Out of memory");
+    for (size_t i = 0; i < this->_size - 1; i++){
+        strcat(strcat(cat, dest[i]), ", ");
+        free(dest[i]);
+    }
+    strcat(cat, dest[this->_size - 1]);
+    free(dest[this->_size - 1]);
+    return cat;
+}
+
+static char *array_string(array_class_t *this)
+{
+    char *ptr = NULL;
+    size_t size_res = 0;
+    char *cat_arr = NULL;
+    char **arr = NULL;
+
+    if (!this)
+        raise("Null pointer passed");
+    arr = malloc(sizeof(char *) * this->_size);
+    if (!arr)
+        raise("Out of memory");
+    cat_arr = cat_array(this, arr);
+    free(arr);
+    size_res = snprintf(NULL, 0, "<%s (%s)>",
+        this->base.base.__name__, cat_arr);
+    ptr = malloc(sizeof(char) * size_res + 1);
+    sprintf(ptr, "<%s (%s)>", this->base.base.__name__, cat_arr);
+    free(cat_arr);
+    return ptr;
+}
+
 static const array_class_t _descr = {
     {   /* Container struct */
         {   /* Class struct */
@@ -200,7 +243,7 @@ static const array_class_t _descr = {
             .__name__ = "Array",
             .__ctor__ = (ctor_t)&array_ctor,
             .__dtor__ = (dtor_t)&array_dtor,
-            .__str__ = NULL,
+            .__str__ = (to_string_t)&array_string,
             .__add__ = (binary_operator_t)&array_add,
             .__sub__ = NULL,
             .__mul__ = NULL,
