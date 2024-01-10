@@ -29,7 +29,7 @@ SRC += point.c
 SRC += vertex.c
 
 VPATH += ../tests/
-SRC += test.c
+SRC += test_point.c
 SRC += test_vertex.c
 
 OBJ := $(SRC:.c=.o)
