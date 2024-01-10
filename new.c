@@ -16,9 +16,9 @@ Object *va_new(const Class *class, va_list *ap)
     if (!class)
         raise("Null pointer passed");
     new_obj = malloc(class->__size__);
-    memcpy(new_obj, class, class->__size__);
     if (!new_obj)
         raise("Out of memory");
+    memcpy(new_obj, class, class->__size__);
     if (class->__ctor__)
         class->__ctor__(new_obj, ap);
     return (Object *)new_obj;
