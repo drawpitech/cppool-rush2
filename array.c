@@ -7,6 +7,7 @@
 
 #include <stdarg.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
 #include "object.h"
 #include "raise.h"
@@ -58,6 +59,17 @@ static object_t *array_iter_getval(array_iter_class_t *this)
 /* Fill this function for exercice 05 */
 static void array_iter_setval(array_iter_class_t *this, ...)
 {
+    size_t ind = 0;
+    va_list ap;
+
+    if (!this || !this->_array || !this->_array->_tab)
+        raise("Null pointer passed");
+    va_start(ap, this);
+    ind = va_arg(ap, size_t);
+    if (ind > this->_array->_size)
+        raise("Index out of range");
+    this->_array->_tab[ind] = va_new(this->_array->_type, &ap);
+    va_end(ap);
 }
 
 static const array_iter_class_t ArrayIteratorDescr = {
@@ -89,6 +101,20 @@ static const Class *ArrayIterator = (const Class *)&ArrayIteratorDescr;
 /* Fill this function for exercice 05 */
 static void array_ctor(array_class_t *this, va_list *args)
 {
+    va_list value;
+
+    if (!this || !args)
+        raise("Null pointer passed");
+    this->_size = va_arg(*args, size_t);
+    this->_type = va_arg(*args, class_t *);
+    this->_tab = malloc(sizeof(object_t *) * this->_size);
+    if (!this->_tab)
+        raise("Out of memory");
+    for (size_t i = 0; i < this->_size; i++){
+        va_copy(value, *args);
+        this->_tab[i] = va_new(this->_type, &value);
+        va_end(value);
+    }
 }
 
 static void array_dtor(array_class_t *this)
@@ -116,11 +142,33 @@ static iterator_t *array_end(array_class_t *this)
 /* Fill this function for exercice 05 */
 static object_t *array_getitem(array_class_t *this, ...)
 {
+    size_t ind = 0;
+    va_list ap;
+
+    if (!this || !this->_tab)
+        raise("Null pointer passed");
+    va_start(ap, this);
+    ind = va_arg(ap, size_t);
+    va_end(ap);
+    if (ind > this->_size)
+        raise("Index out of range");
+    return this->_tab[ind];
 }
 
 /* Fill this function for exercice 05 */
 static void array_setitem(array_class_t *this, ...)
 {
+    size_t ind = 0;
+    va_list ap;
+
+    if (!this || !this->_tab)
+        raise("Null pointer passed");
+    va_start(ap, this);
+    ind = va_arg(ap, size_t);
+    if (ind > this->_size)
+        raise("Index out of range");
+    this->_tab[ind] = va_new(this->_type, &ap);
+    va_end(ap);
 }
 
 static const array_class_t _descr = {
