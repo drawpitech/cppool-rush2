@@ -66,7 +66,7 @@ static void array_iter_setval(array_iter_class_t *this, ...)
         raise("Null pointer passed");
     va_start(ap, this);
     ind = va_arg(ap, size_t);
-    if (ind > this->_array->_size)
+    if (ind >= this->_array->_size)
         raise("Index out of range");
     delete(this->_array->_tab[ind]);
     this->_array->_tab[ind] = va_new(this->_array->_type, &ap);
