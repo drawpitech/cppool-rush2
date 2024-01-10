@@ -13,7 +13,8 @@ CFLAGS += -Waggregate-return -Wcast-qual
 CFLAGS += -Wunreachable-code
 CFLAGS += -U_FORTIFY_SOURCE
 CFLAGS += -iquote ./.
-LDFLAGS :=
+CFLAGS += -g3 --coverage
+LDFLAGS := -lcriterion --coverage
 
 NAME := unit_tests
 
@@ -36,13 +37,11 @@ OBJ := $(SRC:.c=.o)
 
 all: $(NAME)
 
-$(NAME): CFLAGS += -g3 --coverage
-$(NAME): LDFLAGS += -lcriterion --coverage
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LDFLAGS) $(CFLAGS)
 
 tests_run: re
-	./$(NAME)
+	@-./$(NAME)
 
 .PHONY: $(NAME) tests_run
 
@@ -53,6 +52,8 @@ re: fclean
 
 clean:
 	$(RM) $(OBJ)
+	$(RM) $(OBJ:.o=.gcno)
+	$(RM) $(OBJ:.o=.gcda)
 
 fclean: clean
 	$(RM) $(NAME)
