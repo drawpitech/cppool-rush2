@@ -175,6 +175,24 @@ static void array_setitem(array_class_t *this, ...)
     va_end(ap);
 }
 
+static
+array_class_t *array_add(const array_class_t *this, const array_class_t *other)
+{
+    array_class_t *new_array = NULL;
+    size_t ind = 0;
+
+    if (!this || !other)
+        raise("Null inter passed");
+    if (this->_type != other->_type)
+        raise("Add from different types");
+    new_array = new(Array, this->_size + other->_size, this->_type, 0, 0, 0);
+    for (; ind < this->_size; ind++)
+        new_array->_tab[ind] = this->_tab[ind];
+    for (; ind < other->_size + this->_size; ind++)
+        new_array->_tab[ind] = other->_tab[ind - this->_size];
+    return new_array;
+}
+
 static const array_class_t _descr = {
     {   /* Container struct */
         {   /* Class struct */
@@ -183,7 +201,7 @@ static const array_class_t _descr = {
             .__ctor__ = (ctor_t)&array_ctor,
             .__dtor__ = (dtor_t)&array_dtor,
             .__str__ = NULL,
-            .__add__ = NULL,
+            .__add__ = (binary_operator_t)&array_add,
             .__sub__ = NULL,
             .__mul__ = NULL,
             .__div__ = NULL,

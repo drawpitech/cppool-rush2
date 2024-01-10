@@ -160,7 +160,7 @@ static iterator_t *list_end(list_class_t *this)
 }
 
 /* Fill this function for exercice 05 */
-static object_t *list_getitem(list_class_t *this, ...)
+static object_t *list_getitem(const list_class_t *this, ...)
 {
     size_t ind = 0;
     va_list ap;
@@ -196,9 +196,33 @@ static void list_setitem(list_class_t *this, ...)
     for (size_t i = 0; i < ind; i++)
         to_set = to_set->next;
     delete(to_set->_val);
-    va_start(ap, this);
     to_set->_val = va_new(this->_type, &ap);
     va_end(ap);
+}
+
+static
+list_class_t *list_add(const list_class_t *this, const list_class_t *other)
+{
+    list_class_t *new_list = NULL;
+    node_t *last_node = NULL;
+    size_t ind = 0;
+
+    if (!this || !other)
+        raise("Null inter passed");
+    if (this->_type != other->_type)
+        raise("Add from different types");
+    new_list = new(List, this->_size + other->_size, this->_type, 0, 0, 0);
+    last_node = this->_list;
+    for (; ind < this->_size; ind++){
+        last_node->_val = list_getitem(this, ind);
+        last_node = last_node->next;
+    }
+    last_node = other->_list;
+    for (; ind < other->_size + this->_size; ind++){
+        last_node->_val = list_getitem(this, ind - this->_size);
+        last_node = last_node->next;
+    }
+    return new_list;
 }
 
 static const list_class_t _descr = {
@@ -209,7 +233,7 @@ static const list_class_t _descr = {
             .__ctor__ = (ctor_t)&list_ctor,
             .__dtor__ = (dtor_t)&list_dtor,
             .__str__ = NULL,
-            .__add__ = NULL,
+            .__add__ = (binary_operator_t)&list_add,
             .__sub__ = NULL,
             .__mul__ = NULL,
             .__div__ = NULL,
