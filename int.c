@@ -41,7 +41,7 @@ static
 int_class_t *int_add(const int_class_t *this, const int_class_t *other)
 {
     if (!this || !other)
-        raise("Null inter passed");
+        raise("Null pointer passed");
     return new(Int, this->v + other->v);
 }
 
@@ -49,7 +49,7 @@ static
 int_class_t *int_sub(const int_class_t *this, const int_class_t *other)
 {
     if (!this || !other)
-        raise("Null inter passed");
+        raise("Null pointer passed");
     return new(Int, this->v - other->v);
 }
 
@@ -57,7 +57,7 @@ static
 int_class_t *int_mul(const int_class_t *this, const int_class_t *other)
 {
     if (!this || !other)
-        raise("Null inter passed");
+        raise("Null pointer passed");
     return new(Int, this->v * other->v);
 }
 
@@ -65,7 +65,7 @@ static
 int_class_t *int_div(const int_class_t *this, const int_class_t *other)
 {
     if (!this || !other)
-        raise("Null inter passed");
+        raise("Null pointer passed");
     return new(Int, this->v / other->v);
 }
 
@@ -73,7 +73,7 @@ static
 bool int_eq(const int_class_t *this, const int_class_t *other)
 {
     if (!this || !other)
-        raise("Null inter passed");
+        raise("Null pointer passed");
     return this->v == other->v;
 }
 
@@ -81,7 +81,7 @@ static
 bool int_lt(const int_class_t *this, const int_class_t *other)
 {
     if (!this || !other)
-        raise("Null inter passed");
+        raise("Null pointer passed");
     return this->v < other->v;
 }
 
@@ -89,7 +89,7 @@ static
 bool int_gt(const int_class_t *this, const int_class_t *other)
 {
     if (!this || !other)
-        raise("Null inter passed");
+        raise("Null pointer passed");
     return this->v > other->v;
 }
 
